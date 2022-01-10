@@ -126,3 +126,15 @@ select * from Intretinuti
 
 -- 13. Afisati managerii care lucreaza la toate proiectele din departamentul pe care il conduc.
 select A.Nume, A.Prenume from Angajati A
+
+-- 14. Afisati numele departamentelor ce coordoneaza cel putin 3 proiecte la care lucreaza cel putin 5 angajati
+
+-- 15. Afisati toate proiectele pentru care numarul de ore lucrate de toti angajatii este mai mare decat numarul total de ore lucrate la proiectul cu id ul 1
+
+-- 16. Afisati numele managerilor care conduc mai mult de un departament in care nu exista niciun proiect in derulare
+
+-- 17. Afisati managerii care lucreaza la toate proiectele din departamentul pe care il conduc
+
+-- 18. Sa se determine lista angajatilor care lucreaza la toate proiectele departamentului de care apartin, la fiecare proiect avand cel putin 10 ore pe saptamana.
+
+-- 19. Afisati toti angajatii care lucreaza  mai multe ore pe un proiect decat supervizorii lor.
