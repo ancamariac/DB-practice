@@ -124,17 +124,27 @@ WHERE  t1.nrintretinuti = (SELECT Max(cnt)
                                   GROUP  BY AngajatID) t2)
 select * from Intretinuti
 
--- 13. Afisati managerii care lucreaza la toate proiectele din departamentul pe care il conduc.
-select A.Nume, A.Prenume from Angajati A
-
 -- 14. Afisati numele departamentelor ce coordoneaza cel putin 3 proiecte la care lucreaza cel putin 5 angajati
+Select D.NumeDepartament 
+FROM Departamente D
+JOIN Angajati A ON A.DepartamentID = D.DepartamentID
+JOIN AngajatiProiecte AP ON A.AngajatID = AP.AngajatID
+GROUP BY D.NumeDepartament
+HAVING COUNT(AP.ProiectID)>=3 and Count(A.AngajatID)>=5
+
+select * from Departamente
+select * from AngajatiProiecte
+select * from Proiecte
 
 -- 15. Afisati toate proiectele pentru care numarul de ore lucrate de toti angajatii este mai mare decat numarul total de ore lucrate la proiectul cu id ul 1
+select P.NumeProiect from Proiecte P 
+where (select sum(AP.NrOreSaptamana) from Proiecte PR
+join AngajatiProiecte Ap on PR.ProiectID = AP.ProiectID 
+where PR.ProiectID = P.ProiectID) > (select sum(AP.NrOreSaptamana) from AngajatiProiecte AP
+where AP.ProiectID = 1)
 
 -- 16. Afisati numele managerilor care conduc mai mult de un departament in care nu exista niciun proiect in derulare
 
--- 17. Afisati managerii care lucreaza la toate proiectele din departamentul pe care il conduc
+-- 17. Sa se determine lista angajatilor care lucreaza la toate proiectele departamentului de care apartin, la fiecare proiect avand cel putin 10 ore pe saptamana.
 
--- 18. Sa se determine lista angajatilor care lucreaza la toate proiectele departamentului de care apartin, la fiecare proiect avand cel putin 10 ore pe saptamana.
-
--- 19. Afisati toti angajatii care lucreaza  mai multe ore pe un proiect decat supervizorii lor.
+-- 18. Afisati toti angajatii care lucreaza  mai multe ore pe un proiect decat supervizorii lor.
