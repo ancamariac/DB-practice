@@ -144,7 +144,70 @@ where PR.ProiectID = P.ProiectID) > (select sum(AP.NrOreSaptamana) from Angajati
 where AP.ProiectID = 1)
 
 -- 16. Afisati numele managerilor care conduc mai mult de un departament in care nu exista niciun proiect in derulare
+select A.Nume, A.Prenume from Angajati A
+join Departamente D on A.AngajatID = D.ManagerID
+where (select count(De.DepartamentID) from Departamente De
+join Proiecte P on P.DepartamentID = De.DepartamentID
+where D.DepartamentID = De.DepartamentID) = 0
+select * from Angajati
+select * from Departamente
+select * from Proiecte
 
 -- 17. Sa se determine lista angajatilor care lucreaza la toate proiectele departamentului de care apartin, la fiecare proiect avand cel putin 10 ore pe saptamana.
+select A.Nume, A.Prenume from Angajati A
+where (select count(AP.ProiectID) from AngajatiProiecte AP
+where AP.AngajatID = A.AngajatID and AP.NrOreSaptamana >= 10) = (select count(P.ProiectID) from Proiecte P
+where P.DepartamentID = A.DepartamentID)
+
+select * from Angajati
+select * from AngajatiProiecte
+select * from Proiecte
 
 -- 18. Afisati toti angajatii care lucreaza  mai multe ore pe un proiect decat supervizorii lor.
+select A.Nume, A.Prenume from Angajati A
+where (select sum(AP.NrOreSaptamana) from AngajatiProiecte AP
+where AP.AngajatID = A.AngajatID) > (select sum(APS.NrOreSaptamana) from AngajatiProiecte APS
+where APS.AngajatID = A.SupervizorID)
+
+-- 19. Numele si prenumele angajatilor ce lucreaza mai mult de 45 ore la toate proiectele coordonate de departamentul 
+-- din care angajatul face parte.
+select A.Nume, A.Prenume from Angajati A 
+where (select sum(AP.NrOreSaptamana) from AngajatiProiecte AP
+join Proiecte P on AP.ProiectID = P.ProiectID
+where P.DepartamentID = A.DepartamentID and AP.AngajatID = A.AngajatID) > 45
+
+-- 20. Afisati lunile in care s-a nascut numarul minim de angajati de sex masculin, acel numar minim de angajati de sex masculin si numarul
+-- de intretinuti nascuti in acele luni. 
+select a2.Nume, a2.Prenume, d2.NumeDepartament, a2.Sex, month(a2.DataNasterii)
+from Angajati a2 join Departamente d2 on a2.DepartamentID = d2.DepartamentID
+where a2.Sex = 'M' and month(a2.dataNasterii) in (select month(a.DataNasterii)
+FROM Angajati a
+where a.sex = 'M'
+group by month(a.DataNasterii)
+having count(a.angajatID) <= all(select count(a1.angajatID) from Angajati a1 where a1.Sex = 'M' group by month(a1.DataNasterii)))
+
+select a2.nume, a2.Prenume, d.NumeDepartament, a2.Sex, month(a2.DataNasterii) luna
+from Angajati a2 join Departamente d on a2.DepartamentID = d.DepartamentID
+where month(a2.dataNasterii)  in (
+	select  month(a.dataNasterii) luna 
+		from Angajati a 
+		where a.sex ='m'
+		group by month(a.dataNasterii)
+		having count(a.angajatID) =  (
+			select top 1 count(a2.angajatID)
+			from Angajati a2
+			where a2.sex = 'm'
+			group by month(a2.dataNasterii)
+		)
+) and a2.sex = 'm'
+-- 21. Gasiti numele si prenumele managerilor departamentelor, de sex masculin care au mai mult de 2 persoane in intretinere. Ordonati de la 
+-- Z-A
+select A.Nume, A.Prenume from Angajati A
+join Departamente D on A.AngajatID = D.ManagerID
+where A.Sex = 'M' and 
+(select count(I.IntretinutID) from Intretinuti I
+where I.AngajatID = A.AngajatID) >= 1
+order by A.Nume desc
+select * from Angajati
+select * from Intretinuti
+select * from Departamente
